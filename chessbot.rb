@@ -58,11 +58,15 @@ def stream_game(message)
       my_move = message.content.scan(/`[a-zA-Z0-9 ]+`/).join.slice(1..-2).strip
       puts my_move
       if my_move == "start"
-        @games[game_key] = Chess::Game.new if my_move == "start"
+        @games[game_key] = Chess::Game.new
         @flip = false
         send_board(topic, @games[game_key], stream)
       elsif my_move == "peek"
         send_board(topic, @games[game_key], stream)
+      elsif my_move == "gg"
+        @client.send_message(topic, 'gg!', stream)
+        @games[game_key] = Chess::Game.new
+        @flip = false
       elsif my_move == "halp"
         @client.send_message(topic, '[](http://blog.check-and-secure.com/wp-content/uploads/2014/02/halp.png)', stream)
       elsif my_move == "help"
