@@ -44,39 +44,51 @@ def send_board(topic, board = Chess::Game.new.board, stream)
 end
 
 
-@client.stream_messages do |message|
-
-  p message
-  puts
-  stream = "chessbottest"
+def stream_game(message)
+  stream = message.display_recipient
   topic = message.subject
-  @games[topic] ||= Chess::Game.new
+
+  game_key = stream + '::' + topic
+  @games[game_key] ||= Chess::Game.new
 
   if message.sender_email != 'chess-bot@students.hackerschool.com'
     if !message.content.scan(/```.+```/).empty?
       my_move = message.content.scan(/```.+```/).join.slice(3..-4).strip
       if my_move == "start"
-        @games[topic] = Chess::Game.new if my_move == "start"
+        @games[game_key] = Chess::Game.new if my_move == "start"
         @flip = false
-        send_board(topic, @games[topic], stream)
+        send_board(topic, @games[game_key], stream)
       elsif my_move == "peek"
-        send_board(topic, @games[topic], stream)
+        send_board(topic, @games[game_key], stream)
       else
         begin
-          @games[topic].move(my_move)
+          @games[game_key].move(my_move)
         rescue Chess::IllegalMoveError
-          # @client.send_message("chessbot", 'That is not a legal move!', 'chessbot' )
+          @client.send_message(topic, 'That is not a legal move!', stream)
         rescue Chess::BadNotationError
-          # @client.send_message("chessbot", "Malformed notation", "chessbot")
+          @client.send_message(topic, 'Malformed notation.', stream)
         else
           @flip = !@flip
-          # @client.send_message("chessbot", 'Check!', "chessbot") if @game.board.check?
-          if @games[topic].board.checkmate?
-            # @client.send_message("chessbot", 'Checkmate!', "chessbot") if @game.board.check?
+          @client.send_message(topic, 'Check!', stream) if @game.board.check?
+          if @games[game_key].board.checkmate?
+          @client.send_message(topic, 'Checkmate!', stream) if @game.board.checkmate?
           end
-        send_board(topic, @games[topic], stream)
+        send_board(topic, @games[game_key], stream)
         end
       end
+    end
+  end
+end
+
+@client.stream_messages do |message|
+  p message
+  puts
+
+  if message.type == "stream"
+    stream_game(message)
+  else
+    if message.sender_email != 'chess-bot@students.hackerschool.com'
+      @client.send_private_message(":grin:",  message.sender_email)
     end
   end
 end
