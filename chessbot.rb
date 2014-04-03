@@ -8,8 +8,6 @@ end
 
 load "./zulip_api_vars.rb" if File.exist?("./zulip_api_vars.rb")
 
-@client.send_message("chessbot", "/me is now up an running on stream 'chessbot' ... go play!",  "chessbottest")
-
 @game = Chess::Game.new
 @flip = false
 @games = {}
@@ -80,9 +78,9 @@ def stream_game(message)
           @client.send_message(topic, 'Malformed notation.', stream)
         else
           @flip = !@flip
-          @client.send_message(topic, 'Check!', stream) if @game.board.check?
+          @client.send_message(topic, 'Check!', stream) if @games[gamekey].board.check?
           if @games[game_key].board.checkmate?
-          @client.send_message(topic, 'Checkmate!', stream) if @game.board.checkmate?
+            @client.send_message(topic, 'Checkmate!', stream)
           end
         send_board(topic, @games[game_key], stream)
         end
