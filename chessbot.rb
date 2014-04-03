@@ -37,10 +37,13 @@ def send_board(topic, board = Chess::Game.new.board, stream)
       row.reverse
     end
   end
+
+  if fake
+    board.map! {|row| row.map! {|p| p == '＿' ? '♕' : p }}
+  end
+
   board = board.map {|l| l.join('|') }.join("\n")
-  # @client.send_message("chessbot", board,  "chessbot")
   @client.send_message(topic, board,  stream)
-  # @client.send_private_message(board, "jeffowler@gmail.com")
 end
 
 def stream_game(message)
@@ -60,6 +63,8 @@ def stream_game(message)
         send_board(topic, @games[game_key], stream)
       elsif my_move == "peek"
         send_board(topic, @games[game_key], stream)
+      elsif my_move == "halp"
+        @client.send_message(topic, '[](http://blog.check-and-secure.com/wp-content/uploads/2014/02/halp.png)', stream)
       elsif my_move == "help"
         @client.send_message(topic, "I respond to the following commands:\n```start``` sets up a new board.\n```peek``` prints out the board again\n```[any properly notated legal move]``` in [algebraic notation](http://en.wikipedia.org/wiki/Algebraic_notation_(chess)) makes the move, flips the board, and prints it out again.\n\nI listen to everything on stream 'chessbot' where every topic gets its own table, but you can call me into any other stream by mentioning me in your messages (including all moves).\n\nCommands must be formatted between backticks to form a markdown code block. I'm not so good at conversation, but I'm a cheerful bot if you'd like to PM me sometime!", stream)
       else
