@@ -8,8 +8,6 @@ end
 
 load "./zulip_api_vars.rb" if File.exist?("./zulip_api_vars.rb")
 
-@client.send_message("chessbot", "/me is now up an running on stream 'chessbot' ... go play!",  "chessbottest")
-
 @game = Chess::Game.new
 @flip = false
 @games = {}
