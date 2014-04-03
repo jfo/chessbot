@@ -8,7 +8,7 @@ end
 
 load "./zulip_api_vars.rb" if File.exist?("./zulip_api_vars.rb")
 
-# @client.send_message("chessbot", ":grin:",  "chessbot")
+@client.send_message("chessbot", "/me is now up an running on stream 'chessbot' ... go play!",  "chessbottest")
 
 @game = Chess::Game.new
 @flip = false
@@ -43,7 +43,6 @@ def send_board(topic, board = Chess::Game.new.board, stream)
   # @client.send_private_message(board, "jeffowler@gmail.com")
 end
 
-
 def stream_game(message)
   stream = message.display_recipient
   topic = message.subject
@@ -52,14 +51,17 @@ def stream_game(message)
   @games[game_key] ||= Chess::Game.new
 
   if message.sender_email != 'chess-bot@students.hackerschool.com'
-    if !message.content.scan(/```.+```/).empty?
-      my_move = message.content.scan(/```.+```/).join.slice(3..-4).strip
+    if !message.content.scan(/`[a-zA-Z0-9 ]+`/).empty?
+      my_move = message.content.scan(/`[a-zA-Z0-9 ]+`/).join.slice(1..-2).strip
+      puts my_move
       if my_move == "start"
         @games[game_key] = Chess::Game.new if my_move == "start"
         @flip = false
         send_board(topic, @games[game_key], stream)
       elsif my_move == "peek"
         send_board(topic, @games[game_key], stream)
+      elsif my_move == "help"
+        @client.send_message(topic, "I respond to the following commands:\n```start``` sets up a new board.\n```peek``` prints out the board again\n```[any properly notated legal move]``` in [algebraic notation](http://en.wikipedia.org/wiki/Algebraic_notation_(chess)) makes the move, flips the board, and prints it out again.\n\nI listen to everything on stream 'chessbot' where every topic gets its own table, but you can call me into any other stream by mentioning me in your messages (including all moves).\n\nCommands must be formatted between backticks to form a markdown code block. I'm not so good at conversation, but I'm a cheerful bot if you'd like to PM me sometime!", stream)
       else
         begin
           @games[game_key].move(my_move)
