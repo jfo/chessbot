@@ -52,8 +52,8 @@ def stream_game(message)
   @games[game_key] ||= Chess::Game.new
 
   if message.sender_email != 'chess-bot@students.hackerschool.com'
-    if !message.content.scan(/`[a-zA-Z0-9 ]+`/).empty?
-      my_move = message.content.scan(/`[a-zA-Z0-9 ]+`/).join.slice(1..-2).strip
+    if !message.content.scan(/`[a-zA-Z0-9\-]+`/).empty?
+      my_move = message.content.scan(/`[a-zA-Z0-9\-]+`/).join.slice(1..-2).strip
       puts my_move
       if my_move == "start"
         @games[game_key] = Chess::Game.new
