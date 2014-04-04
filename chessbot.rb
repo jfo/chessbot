@@ -61,7 +61,7 @@ def stream_game(message)
         send_board(topic, @games[game_key], stream)
       elsif my_move == "peek"
         send_board(topic, @games[game_key], stream)
-      elsif my_move == "gg"
+      elsif my_move == "gg" || my_move == "resign"
         @client.send_message(topic, 'gg!', stream)
         @games[game_key] = Chess::Game.new
         @flip = false
