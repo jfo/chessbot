@@ -2,11 +2,9 @@ require 'chess'
 require 'zulip'
 
 @client = Zulip::Client.new do |config|
-  config.email_address = "YOUR BOT'S EMAIL ADDRESS"
-  config.api_key = "YOUR BOT'S API KEY"
+  config.email_address = ENV['bot_email']
+  config.api_key = ENV['bot_api_key']
 end
-
-load "./zulip_api_vars.rb" if File.exist?("./zulip_api_vars.rb")
 
 @game = Chess::Game.new
 @flip = false
