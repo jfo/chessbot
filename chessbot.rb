@@ -42,7 +42,7 @@ def stream_send_board(topic, board, stream)
 end
 
 def pm_send_board(board, recips)
-  @client.send_private_message(board, recips[0],recips[1],recips[2])
+  @client.send_private_message(board, *recips)
 end
 
 def pm_game(message)
@@ -71,22 +71,22 @@ def pm_game(message)
         @games[@game_key][:game] = Chess::Game.new
         @games[@game_key][:flip] = false
       elsif my_move == "halp"
-        @client.send_private_message('[](http://blog.check-and-secure.com/wp-content/uploads/2014/02/halp.png)', recipients[0],recipients[1],recipients[2])
+        @client.send_private_message('[](http://blog.check-and-secure.com/wp-content/uploads/2014/02/halp.png)', *recipients)
       elsif my_move == "help"
-        @client.send_message("I respond to the following commands:\n```start``` sets up a new board.\n```peek``` prints out the board again\n```[any properly notated legal move]``` in [algebraic notation](http://en.wikipedia.org/wiki/Algebraic_notation_(chess)) makes the move, flips the board, and prints it out again.\n\nI listen to everything on stream 'chessbot' where every topic gets its own table.\n\nCommands must be formatted between backticks to form a markdown code block.", recipients[0],recipients[1],recipients[2])
+        @client.send_message("I respond to the following commands:\n```start``` sets up a new board.\n```peek``` prints out the board again\n```[any properly notated legal move]``` in [algebraic notation](http://en.wikipedia.org/wiki/Algebraic_notation_(chess)) makes the move, flips the board, and prints it out again.\n\nI listen to everything on stream 'chessbot' where every topic gets its own table.\n\nCommands must be formatted between backticks to form a markdown code block.", *recipients)
       else
         begin
           @games[@game_key][:game].move(my_move)
         rescue Chess::IllegalMoveError
-          @client.send_private_message('That is not a legal move!', recipients[0],recipients[1],recipients[2])
+          @client.send_private_message('That is not a legal move!', *recipients)
         rescue Chess::BadNotationError
-          @client.send_private_message('Malformed notation', recipients[0],recipients[1],recipients[2])
+          @client.send_private_message('Malformed notation', *recipients)
         else
           @games[@game_key][:flip] = !@games[@game_key][:flip]
           if @games[@game_key][:game].board.checkmate?
-            @client.send_private_message('Checkmate!', recipients[0],recipients[1],recipients[2])
+            @client.send_private_message('Checkmate!', *recipients)
           end
-            @client.send_private_message('Check!', recipients[0],recipients[1],recipients[2]) if @games[@game_key][:game].board.check?
+            @client.send_private_message('Check!', *recipients) if @games[@game_key][:game].board.check?
         pm_send_board(prep_board(@games[@game_key][:game]), recipients)
         end
       end
