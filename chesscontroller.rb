@@ -3,7 +3,7 @@ require 'zulip'
 
 class ChessController
 
-  attr_reader :game, :flip, :client
+  attr_accessor :game, :flip, :client
 
   @@client = Zulip::Client.new do |config|
     config.email_address = ENV['chessbot_email']
@@ -24,7 +24,7 @@ class ChessController
               'K' => '♔',
               '.' => '＿' }
 
-  def initialize
+  def init
     @game = Chess::Game.new
     @flip = false
   end
@@ -55,11 +55,16 @@ class PMGame < ChessController
   attr_reader :recipients
 
   def initialize(recipients)
+    init
     @recipients = recipients
   end
 
-  def send
-    @@client.send_private_message(print_board, *recipients)
+  def init
+    super
+  end
+
+  def send(response)
+    @@client.send_private_message(response, *recipients)
   end
 
 end
@@ -70,13 +75,16 @@ class StreamGame < ChessController
   attr_reader :stream, :topic
 
   def initialize(stream, topic)
+    init
     @stream = stream
     @topic = topic
   end
+  def init
+    super
+  end
 
-  def send(stream, topic)
-    @@client.send_message(topic, print_board, stream)
+  def send(response)
+    @@client.send_message(@topic, response, @stream)
   end
 
 end
-
