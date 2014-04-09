@@ -24,7 +24,7 @@ class ChessController
               'K' => '♔',
               '.' => '＿' }
 
-  def init
+  def initialize(*params)
     @game = Chess::Game.new
     @flip = false
   end
@@ -45,46 +45,6 @@ class ChessController
 
   def set_up
     @game = Chess::Game.new
-  end
-
-end
-
-
-class PMGame < ChessController
-
-  attr_reader :recipients
-
-  def initialize(recipients)
-    init
-    @recipients = recipients
-  end
-
-  def init
-    super
-  end
-
-  def send(response)
-    @@client.send_private_message(response, *recipients)
-  end
-
-end
-
-
-class StreamGame < ChessController
-
-  attr_reader :stream, :topic
-
-  def initialize(stream, topic)
-    init
-    @stream = stream
-    @topic = topic
-  end
-  def init
-    super
-  end
-
-  def send(response)
-    @@client.send_message(@topic, response, @stream)
   end
 
 end

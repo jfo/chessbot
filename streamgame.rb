@@ -1,15 +1,14 @@
-require "chesscontroller.rb"
+require_relative "chesscontroller.rb"
+
+require 'pry'
 
 class StreamGame < ChessController
 
   attr_reader :stream, :topic
 
   def initialize(stream, topic)
-    init
     @stream = stream
     @topic = topic
-  end
-  def init
     super
   end
 
@@ -18,3 +17,5 @@ class StreamGame < ChessController
   end
 
 end
+
+binding.pry

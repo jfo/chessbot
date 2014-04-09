@@ -5,11 +5,7 @@ class PMGame < ChessController
   attr_reader :recipients
 
   def initialize(recipients)
-    init
     @recipients = recipients
-  end
-
-  def init
     super
   end
 
