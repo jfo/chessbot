@@ -54,6 +54,7 @@ require 'zulip'
         case command
         when "start"
           active_game.set_up
+          response = active_game.print_board
         when "peek"
           response ||= active_game.print_board
         when "gg", "resign"
