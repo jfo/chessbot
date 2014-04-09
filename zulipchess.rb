@@ -1,4 +1,4 @@
-require_relative 'chessbot.rb'
+require_relative 'chesscontroller.rb'
 require 'zulip'
 
 
