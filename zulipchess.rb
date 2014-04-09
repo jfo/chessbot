@@ -1,6 +1,9 @@
 require_relative 'chessbot.rb'
 require 'zulip'
 
+
+system("source bot_vars.sh")
+
 # module ZulipChess
 
   @client = Zulip::Client.new do |config|
