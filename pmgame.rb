@@ -1,5 +1,3 @@
-require "chesscontroller.rb"
-
 class PMGame < ChessController
 
   attr_reader :recipients

@@ -1,7 +1,3 @@
-require_relative "chesscontroller.rb"
-
-require 'pry'
-
 class StreamGame < ChessController
 
   attr_reader :stream, :topic
@@ -17,5 +13,3 @@ class StreamGame < ChessController
   end
 
 end
-
-binding.pry
