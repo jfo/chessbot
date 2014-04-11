@@ -66,6 +66,7 @@ require 'zulip'
           response = "pending"
         when "undo"
           active_game.game.rollback!
+          active_game.flip = !active_game.flip
           response = active_game.print_board
         else
           begin
