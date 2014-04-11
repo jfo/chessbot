@@ -64,6 +64,9 @@ require 'zulip'
           response = "hallllp meeee!!!"
         when "help"
           response = "pending"
+        when "undo"
+          active_game.game.rollback!
+          response = active_game.print_board
         else
           begin
             active_game.game.move(command)
