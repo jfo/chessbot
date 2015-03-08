@@ -5,6 +5,8 @@ require_relative 'streamgame.rb'
 require 'zulip'
 
 # module ZulipChess
+#
+  system "source ./bot_vars.sh"
 
   @client = Zulip::Client.new do |config|
     config.email_address = ENV['chessbot_email']
@@ -63,7 +65,7 @@ require 'zulip'
         when "halp"
           response = "hallllp meeee!!!"
         when "help"
-          response = "pending"
+            response = "I accept legal moves and know when the game is over. They must be wrapped in a code backtick like `this`. `start` starts a new game, `peek` displays the current board, and `gg` or `resign` ends the game. you can also `undo` moves"
         when "undo"
           active_game.game.rollback!
           active_game.flip = !active_game.flip
